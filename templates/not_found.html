@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AnimeFlix | Anime Not Found</title>
+  <!-- Materialize CSS y Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6C5CE7;
+      --secondary-color: #FF6B81;
+      --accent-color: #00D2D3;
+      --dark-bg: #0F111A;
+      --card-bg: #1A1C25;
+      --navbar-bg: #1A1C25;
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A0A0;
+      --highlight: #FD79A8;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      background-image: 
+        radial-gradient(circle at 25% 10%, rgba(108, 92, 231, 0.05) 0%, transparent 80%),
+        radial-gradient(circle at 75% 90%, rgba(0, 210, 211, 0.05) 0%, transparent 80%);
+      background-attachment: fixed;
+    }
+    /* Barra de navegación */
+    nav {
+      background: var(--navbar-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .brand-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--text-primary) !important;
+      margin-left: 20px;
+    }
+    /* Contenedor principal centrado */
+    .container {
+      width: 1150px;
+      margin: 50px auto;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    /* Tarjeta de "Anime not found" */
+    .not-found-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 40px 30px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      text-align: center;
+      animation: fadeIn 1s ease;
+    }
+    .not-found-card h1 {
+      font-family: 'Montserrat', sans-serif;
+      color: var(--accent-color);
+      font-size: 3rem;
+      margin: 0 0 20px 0;
+      position: relative;
+      display: inline-block;
+    }
+    /* Línea de énfasis debajo del título */
+    .not-found-card h1::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -10px;
+      transform: translateX(-50%);
+      width: 60%;
+      height: 4px;
+      background: var(--secondary-color);
+      border-radius: 2px;
+    }
+    .not-found-card p {
+      font-size: 1.2rem;
+      color: var(--text-secondary);
+      margin-bottom: 30px;
+    }
+    .back-home {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background: var(--accent-color);
+      color: var(--dark-bg);
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
+    .back-home:hover {
+      background: var(--secondary-color);
+    }
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="/" class="brand-logo">Anime<span style="color: var(--secondary-color);">Flix</span></a>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <div class="not-found-card">
+      <h1>Anime Not Found</h1>
+      <p>We are sorry, we could not find the anime you are searching.</p>
+      <a href="/" class="back-home">Back home</a>
+    </div>
+  </div>
+  
+  <!-- Scripts de Materialize y jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

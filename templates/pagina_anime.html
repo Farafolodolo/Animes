@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AnimeFlix | One Piece</title>
+  <!-- Materialize CSS y Google Fonts -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6C5CE7;
+      --secondary-color: #FF6B81;
+      --accent-color: #00D2D3;
+      --dark-bg: #0F111A;
+      --card-bg: #1A1C25;
+      --navbar-bg: #1A1C25;
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A0A0;
+      --highlight: #FD79A8;
+    }
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      background-image: 
+        radial-gradient(circle at 25% 10%, rgba(108, 92, 231, 0.05) 0%, transparent 80%),
+        radial-gradient(circle at 75% 90%, rgba(0, 210, 211, 0.05) 0%, transparent 80%);
+      background-attachment: fixed;
+    }
+    /* Barra de navegación simple */
+    nav {
+      background: var(--navbar-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .brand-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--text-primary) !important;
+      margin-left: 20px;
+    }
+    /* Contenedor principal responsivo */
+    .container {
+      max-width: 1300px;
+      width: 95%;
+      margin: 20px auto;
+      padding: 20px;
+    }
+    /* Tarjeta de detalle del anime */
+    .anime-detail-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+      overflow: hidden;
+      display: flex;
+      flex-wrap: wrap;
+    }
+    .anime-image {
+      flex: 1 1 300px;
+      max-width: 600px;
+    }
+    .anime-image img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+    .anime-info {
+      flex: 2 1 500px;
+      padding: 20px;
+    }
+    .anime-info h1 {
+      font-family: 'Montserrat', sans-serif;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: #00D2D3;
+    }
+    /* Sección de plataformas */
+    .platforms {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+      font-size: 1.1rem;
+      flex-wrap: wrap;
+    }
+    .platform-logos {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+    .platform-logo {
+      width: 70px;
+      height: 70px;
+      background: rgba(108, 92, 231, 0.3);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+      transition: transform 0.3s ease;
+    }
+    .platform-logo:hover {
+      transform: scale(1.1);
+    }
+    .platform-logo img {
+      max-width: 90%;
+      max-height: 90%;
+    }
+    .info-item {
+      margin: 10px 0;
+      font-size: 1rem;
+    }
+    .info-item strong {
+      color: var(--accent-color);
+    }
+    .synopsis {
+      margin-top: 20px;
+      line-height: 1.6;
+      text-align: justify;
+    }
+    /* Media queries para responsividad */
+    @media (max-width: 768px) {
+      .anime-detail-card {
+        flex-direction: column;
+      }
+      .anime-image, .anime-info {
+        max-width: 100%;
+      }
+      .anime-info {
+        padding: 15px;
+      }
+    }
+    @media (max-width: 480px) {
+      .anime-info h1 {
+        font-size: 1.8rem;
+      }
+      .info-item {
+        font-size: 0.9rem;
+      }
+      .platform-logo {
+        width: 60px;
+        height: 60px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="{{ url_for('main.index') }}" class="brand-logo">Anime<span style="color: var(--secondary-color);">Flix</span></a>
+    </div>
+  </nav>
+  
+  <div class="container">
+    <div class="anime-detail-card">
+      <div class="anime-image">
+        <img src="{{ anime.image_url }}" alt="{{ anime.title }}">
+      </div>
+      <div class="anime-info">
+        <h1>{{ anime.title }}</h1>
+        <div class="platforms">
+          <span style="color: #00D2D3;">Disponible en:</span>
+          {% if anime.streaming %}
+            {% if 'Netflix' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="https://www.netflix.com/mx/" title="See it in Netflix">
+                  <div class="platform-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Netflix_2015_logo.svg" alt="Netflix">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+            {% if 'Crunchyroll' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="https://www.crunchyroll.com/es/?srsltid=AfmBOorvPcr-2Z291uQoiixps8khTnG9ijVmNvhWTIGdrT3rOVGXwyew" title="See it in Crunchyroll">
+                  <div class="platform-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Crunchyroll_Logo.png" alt="Crunchyroll">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+            {% if 'Amazon Prime Video' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="https://www.primevideo.com/" title="See it in Prime Video">
+                  <div class="platform-logo">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/ca/Amazon_Prime_Video_logo_%282024%29.svg/2048px-Amazon_Prime_Video_logo_%282024%29.svg.png" alt="Prime video">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+            {% if 'Max' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="https://www.max.com/" title="See it in Max">
+                  <div class="platform-logo">
+                    <img src="https://yt3.googleusercontent.com/oq4KsHJ8rZDIoChpWqyVSdyMTbIw0Q5oa9I8KjW38tz0_81oTQpTCep-VF6oN5fM9OXM9g79nmA=s900-c-k-c0x00ffffff-no-rj" alt="Max">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+            {% if 'Disney Plus' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="https://www.disneyplus.com/" title="See it in Disney Plus">
+                  <div class="platform-logo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf7_ic-h09k9aCvKFSKdYQd6UHM7N96TjcSA&s" alt="Disney plus">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+            {% if 'Filmin' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="https://www.filmin.es/" title="See it in Filmin">
+                  <div class="platform-logo">
+                    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTCwM3iWY1oUCk7SLO_QioDJTpGIWcxC2ba0A&s" alt="Filmin">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+            {% if 'Shahid VIP' in anime.streaming %}
+              <div class="platform-logos">
+                <a href="" title="See it in Shahid VIP">
+                  <div class="platform-logo">
+                    <img src="https://www.arabnews.com/sites/default/files/styles/n_670_395/public/shahid_vip.png?itok=6ghFza7t" alt="Shahid VIP">
+                  </div>
+                </a>
+              </div>
+            {% endif %}
+          {% else %}
+            <p>No disponible</p>
+          {% endif %}
+        </div>
+        <p class="info-item"><strong>Prices: </strong></p>
+        <ul>
+          {% if anime.streaming %}
+            {% if 'Netflix' in anime.streaming %}
+              <span>Netflix: </span>$6.99
+            {% endif %}
+            {% if 'Crunchyroll' in anime.streaming%}
+              <span>Crunchyroll: </span>$7.99
+            {% endif %}
+            {% if 'Amazon Prime Video' in anime.streaming %}
+              <span>Amazon Prime Video: </span>$5.99
+            {% endif %}
+            {% if 'Max' in anime.streaming %}
+              <span>Max: </span>$9.99
+            {% endif %}
+            {% if 'Disney Plus' in anime.streaming%}
+              <span>Disney Plus: </span>$7.99
+            {% endif %}
+            {% if 'Filmin' in anime.streaming %}
+              <span>Filmin: </span>$7.99
+            {% endif %}
+            {% if 'Shahid VIP' in anime.streaming %}
+              <span>Shahid VIP: </span>$11.99
+            {% endif %}
+          {% else %}
+            <span>No disponible</span>
+          {% endif %}
+        </ul>
+        <p class="info-item"><strong>Episodes:</strong> {{ anime.episodes }} </p>
+        <p class="info-item"><strong>Type:</strong> {{ anime.type }} </p>
+        <p class="info-item"><strong>Genres:</strong> {{ anime.genres }} </p>
+        <p class="info-item"><strong>Status:</strong> {{ anime.status }} </p>
+        <p class="info-item"><strong>Purchase year:</strong> {{ anime.year }} </p>
+        <p class="info-item"><strong>Rating:</strong> {{ anime.rating }} </p>
+        <p class="info-item"><strong>Score:</strong> {{ anime.score }} </p>
+        <p class="info-item"><strong>Season:</strong> {{ anime.season }} </p>
+        <p class="info-item"><strong>Producers:</strong> {{ anime.producers }} </p>
+        <p class="info-item"><strong>Licensors:</strong> {{ anime.licensors }} </p>
+        <p class="info-item"><strong>Studios:</strong> {{ anime.studios }} </p>
+      </div>
+      <div class="synopsis">
+        <p><strong style="color: #00D2D3;">Synopsis:</strong> {{ anime.synopsis }} </p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scripts de Materialize y jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AnimeFlix | Tu Base de Datos de Anime</title>
+  <link rel="icon" href="data:;base64,iVBORw0KGgo=">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #6C5CE7;
+      --secondary-color: #FF6B81;
+      --accent-color: #00D2D3;
+      --dark-bg: #0F111A;
+      --card-bg: #1A1C25;
+      --navbar-bg: #1A1C25;
+      --text-primary: #FFFFFF;
+      --text-secondary: #A0A0A0;
+      --highlight: #FD79A8;
+    }
+
+    /* Estilos Globales */
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--dark-bg);
+      color: var(--text-primary);
+      background-image: 
+        radial-gradient(circle at 25% 10%, rgba(108, 92, 231, 0.05) 0%, transparent 80%),
+        radial-gradient(circle at 75% 90%, rgba(0, 210, 211, 0.05) 0%, transparent 80%);
+      background-attachment: fixed;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+    }
+
+    .container {
+      max-width: 1200px;
+      padding: 0 20px;
+    }
+
+    /* Barra de Navegación - CORREGIDA */
+    nav {
+      background: var(--navbar-bg);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      position: fixed;
+      top: 0;
+      width: 100%;
+      z-index: 1000;
+      height: 7em;
+    }
+
+    .nav-wrapper {
+      display: flex;
+      align-items: center;
+      height: 100%;
+      padding: 0 20px;
+    }
+
+    .brand-logo {
+      font-family: 'Montserrat', sans-serif;
+      font-weight: 700;
+      font-size: 1.8rem;
+      color: var(--text-primary);
+      text-decoration: none;
+      white-space: nowrap;
+      margin-right: 20px;
+    }
+
+    .brand-logo span:first-child {
+      color: var(--primary-color);
+    }
+
+    .brand-logo span:last-child {
+      color: var(--secondary-color);
+    }
+
+    .nav-search {
+      flex: 1;
+      max-width: 800px;
+    }
+
+    .input-field {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 50px;
+      height: 10px;
+      line-height: 45px;
+      margin: 0;
+      padding: 8px 15px;
+      display: flex;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .input-field:focus-within {
+      background: rgba(255, 255, 255, 0.12);
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    .input-field input {
+      background: transparent !important;
+      border: none !important;
+      box-shadow: none !important;
+      color: var(--text-primary) !important;
+      height: 45px !important;
+      margin: 0 !important;
+      padding-left: 10px !important;
+    }
+
+    .input-field input::placeholder {
+      color: var(--text-secondary);
+    }
+
+    .input-field .material-icons {
+      color: var(--text-secondary);
+    }
+
+    .input-field .material-icons.close {
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    /* Contenedor principal con margen para navbar */
+    main {
+      margin-top: 90px;
+      min-height: calc(100vh - 90px);
+      padding-bottom: 40px;
+    }
+
+    /* Contenedor de Búsqueda */
+    .search-container {
+      background: linear-gradient(135deg, rgba(26, 28, 37, 0.8) 0%, rgba(26, 28, 37, 0.9) 100%);
+      backdrop-filter: blur(10px);
+      padding: 25px;
+      border-radius: 16px;
+      margin: 20px auto 30px;
+      max-width: 1100px;
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .search-container::before {
+      content: '';
+      position: absolute;
+      top: -100px;
+      left: -100px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+      opacity: 0.1;
+      z-index: -1;
+    }
+
+    .search-container::after {
+      content: '';
+      position: absolute;
+      bottom: -100px;
+      right: -100px;
+      width: 200px;
+      height: 200px;
+      background: radial-gradient(circle, var(--secondary-color) 0%, transparent 70%);
+      opacity: 0.1;
+      z-index: -1;
+    }
+
+    .search-title {
+      font-size: 1.4rem;
+      margin-top: 0;
+      margin-bottom: 20px;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+    }
+
+    .search-title .material-icons {
+      margin-right: 10px;
+      color: var(--accent-color);
+    }
+
+    .select-group {
+      display: flex;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .select-wrapper {
+      position: relative;
+      flex: 1 1 150px;
+      min-width: 150px;
+    }
+
+    .select-wrapper label {
+      position: absolute;
+      top: -20px;
+      left: 5px;
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+    }
+
+    .select-group select {
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.05) !important;
+      color: var(--text-primary) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px 15px;
+      height: 45px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23A0A0A0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      background-size: 16px;
+    }
+
+    .select-group select:hover {
+      background-color: rgba(255, 255, 255, 0.1) !important;
+    }
+
+    .select-group select:focus {
+      border-color: var(--primary-color);
+      outline: none;
+      box-shadow: 0 0 0 2px rgba(108, 92, 231, 0.2);
+    }
+
+    .select-group select option {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+    }
+
+    /* Tarjetas de Anime */
+    .anime-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+    }
+
+    .anime-card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+      height: 100%;
+      display: block;
+      position: relative;
+      backface-visibility: hidden;
+      transform: translateZ(0);
+      animation: fadeIn 0.6s ease both;
+      animation-delay: calc(var(--animation-order) * 0.1s);
+    }
+
+    .anime-card:hover {
+      transform: translateY(-8px) scale(1.02);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+      z-index: 1;
+    }
+
+    .card-image {
+      height: 350px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .card-image::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 60%;
+      background: linear-gradient(to top, var(--card-bg), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .anime-card:hover .card-image::after {
+      opacity: 1;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.7s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .anime-card:hover .card-image img {
+      transform: scale(1.1);
+    }
+
+    .anime-info-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 20px;
+      background: linear-gradient(to top, rgba(26, 28, 37, 0.95), rgba(26, 28, 37, 0.7) 60%, transparent);
+      transform: translateY(100%);
+      transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      z-index: 2;
+    }
+
+    .anime-card:hover .anime-info-overlay {
+      transform: translateY(0);
+    }
+
+    .anime-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-align: left;
+      padding: 15px;
+      color: var(--text-primary);
+      position: relative;
+      z-index: 2;
+    }
+
+    .anime-title::after {
+      content: '';
+      position: absolute;
+      bottom: 10px;
+      left: 15px;
+      width: 40px;
+      height: 3px;
+      background: var(--accent-color);
+      transition: width 0.3s ease;
+    }
+
+    .anime-card:hover .anime-title::after {
+      width: 60px;
+    }
+
+    .info-item {
+      font-size: 0.9rem;
+      margin: 8px 0;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: baseline;
+    }
+
+    .info-item strong {
+      min-width: 70px;
+      display: inline-block;
+      color: var(--accent-color);
+      font-weight: 400;
+      margin-right: 5px;
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--primary-color);
+      color: white;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 30px;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 3;
+      font-weight: 600;
+    }
+
+    .badge.airing {
+      background: var(--accent-color);
+    }
+
+    .badge.movie {
+      background: var(--highlight);
+    }
+
+    /* Estilos para etiquetas de géneros */
+    .genre-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 5px;
+      margin-top: 10px;
+    }
+
+    .genre-tag {
+      background: rgba(108, 92, 231, 0.2);
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 0.7rem;
+      color: var(--text-primary);
+    }
+
+    /* Loader */
+    .loader-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 0;
+      min-height: 100px;
+    }
+
+    .loader {
+      border: 3px solid rgba(108, 92, 231, 0.1);
+      border-top: 3px solid var(--primary-color);
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Animación de pulse para logo */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    /* Mensaje de no resultados */
+    .no-results {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--text-secondary);
+      display: none;
+    }
+
+    .no-results .material-icons {
+      font-size: 4rem;
+      margin-bottom: 20px;
+      color: var(--primary-color);
+      opacity: 0.5;
+    }
+
+    /* Botón flotante para volver arriba */
+    .scroll-top {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      color: white;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+      z-index: 100;
+    }
+
+    .scroll-top.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .scroll-top:hover {
+      background: var(--secondary-color);
+      transform: translateY(-5px);
+    }
+
+    /* Estilos responsive - CORREGIDOS */
+    @media (max-width: 992px) {
+      .anime-grid {
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 20px;
+      }
+      
+      .select-wrapper {
+        flex: 1 1 calc(33.33% - 15px);
+      }
+    }
+
+    @media (max-width: 768px) {
+      nav {
+        height: auto;
+        min-height: 120px;
+        padding: 10px 0;
+      }
+      
+      .nav-wrapper {
+        flex-direction: column;
+        padding: 10px 20px;
+        gap: 10px;
+      }
+      
+      main {
+        margin-top: 140px;
+      }
+      
+      .anime-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 15px;
+      }
+      
+      .card-image {
+        height: 250px;
+      }
+      
+      .anime-title {
+        font-size: 1rem;
+        padding: 12px;
+      }
+      
+      .select-wrapper {
+        flex: 1 1 calc(50% - 15px);
+      }
+    }
+
+    @media (max-width: 576px) {
+      
+      .anime-grid {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 12px;
+      }
+      
+      .card-image {
+        height: 200px;
+      }
+      
+      .anime-title {
+        font-size: 0.9rem;
+        padding: 10px;
+      }
+      
+      .select-wrapper {
+        flex: 1 1 100%;
+      }
+      
+      .info-item {
+        font-size: 0.8rem;
+        margin: 6px 0;
+      }
+      
+      .info-item strong {
+        min-width: 60px;
+      }
+      
+      .scroll-top {
+        width: 40px;
+        height: 40px;
+        bottom: 20px;
+        right: 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <nav>
+    <a href="#"></a>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo"><span>Anime</span><span>Flix</span></a>
+      <div class="nav-search">
+        <form>
+          <div class="input-field" style="margin-left: 200px;">
+            <i class="material-icons">search</i>
+            <input id="search" type="search" placeholder="Search anime..." required>
+            <i class="material-icons close">close</i>
+          </div>
+        </form>
+      </div>
+    </div>
+  </nav>
+
+  <main style="margin-top: 10em;">
+    <div class="container">
+      <div class="search-container">
+        <h2 class="search-title"><i class="material-icons">filter_list</i>Search filters</h2>
+        <div class="select-group">
+          <div class="select-wrapper">
+            <label for="year-select">Year</label>
+            <select class="browser-default" id="year-select" name="year">
+              <option value="" selected>Every year</option>
+              {%for year in range(2006,1988,-1)%}
+                <option value="{{year}}">{{year}}</option>
+              {%endfor%}
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <label for="season-select">Season</label>
+            <select class="browser-default" id="season-select" name="season">
+              <option value="" selected>Every season</option>
+              <option value="winter">Winter</option>
+              <option value="spring">Spring</option>
+              <option value="summer">Summer</option>
+              <option value="fall">Fall</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <label for="format-select">Format</label>
+            <select class="browser-default" id="format-select" name="format">
+              <option value="" selected>Every format</option>
+              <option value="TV">TV</option>
+              <option value="Movie">Movie</option>
+              <option value="OVA">OVA</option>
+              <option value="Special">Special</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <label for="status-select">Status</label>
+            <select class="browser-default" id="status-select" name="status">
+              <option value="" selected>Every status</option>
+              <option value="Currently Airing">Currently Airing</option>
+              <option value="Finished Airing">Finished Airing</option>
+            </select>
+          </div>
+          <div class="select-wrapper">
+            <label for="genre-select">Genre</label>
+            <select class="browser-default" id="genre-select" name="genre">
+              <option value="" selected>Every genre</option>
+              <option value="Action">Action</option>
+              <option value="Award Winning">Award Winning</option>
+              <option value="Sci-Fi">Science fiction</option>
+              <option value="Adventure">Adventure</option>
+              <option value="Drama">Drama</option>
+              <option value="Mystery">Mystery/option>
+              <option value="Supernatural">Supernatural</option>
+              <option value="Fantasy">Fantasy</option>
+              <option value="Sports">Sports</option>
+              <option value="Comedy">Comedy</option>
+              <option value="Romance">Romance</option>
+              <option value="Slice of Life">Slice of Life</option>
+              <option value="Suspense">Suspense</option>
+              <option value="Horror">Terror</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="anime-grid" id="anime-container"></div>
+      
+      <div class="no-results" id="no-results">
+        <i class="material-icons">search_off</i>
+        <h3>No results</h3>
+        <p>Try with another filter or search</p>
+      </div>
+      
+      <div class="loader-container">
+        <div class="loader" id="loader"></div>
+      </div>
+    </div>
+  </main>
+
+  <div class="scroll-top" id="scroll-top">
+    <i class="material-icons">keyboard_arrow_up</i>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" 
+          integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" 
+          crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    //When the document is ready, it will activate a materialize function for the selects (that makes the selects look better)
+    $(document).ready(function(){ $('select').formSelect(); });
+
+    //The currentPage (It will be increasing while the user is going down)
+    let currentPage = 1;
+    //Boolean variable to know if the next animes are loading
+    let isLoading = false;
+    //Boolean variabe to know if there are more animes in the database to show
+    let has_next_loading = false;
+
+    //Functions to make the loader show up or hide
+    function showLoader() { document.getElementById('loader').style.display = 'block'; }
+    function hideLoader() { document.getElementById('loader').style.display = 'none'; }
+
+    //Function to load the animes, it states the reset like false as default
+    async function loadAnimes(reset = false) {
+      //if is loading it won't allow to duplicate the requests
+      if(isLoading) return;
+      //Changes the variable
+      isLoading = true;
+      //It shows the loader
+      showLoader();
+      //If the variable reset is true, is going to start again from the page 1
+      if(reset) currentPage = 1;
+
+      //It creates an object to send the args 
+      const params = new URLSearchParams({
+        search: document.getElementById('search').value,
+        year: document.querySelector('[name="year"]').value,
+        //Query selector is more flexible than the get element by id (If I am honest, I would have used get element by id, but the man in the tutorial did it in this way)
+        season: document.querySelector('[name="season"]').value,
+        format: document.querySelector('[name="format"]').value,
+        status: document.querySelector('[name="status"]').value,
+        genre: document.querySelector('[name="genre"]').value,
+        page: currentPage
+      });
+
+      try {
+        //It makes a request to the api with the args stated on top
+        const response = await fetch(`/api/animes?${params.toString()}`);
+        //It converts the response from JSON to an javascript object
+        const data = await response.json();
+        //If reset is true, it's going to clean the anime container by replacing all the content with a ''
+        if(reset) document.getElementById('anime-container').innerHTML = '';
+        //If there are not results, It's going to show the display
+        if(data.animes.length === 0 && currentPage === 1) {
+          document.getElementById('no-results').style.display = 'block';
+        } else {
+          document.getElementById('no-results').style.display = 'none';
+        }
+        //It's going to iterate all the animes and adding a index for the animation for showing up
+        data.animes.forEach((anime, index) => {
+          //It creates a list of genres coming from the response
+          const genresList = Array.isArray(anime.genres) 
+          //The slice is for selecting the first three genres, map is for creating a completely new array adding elements of the original array, and the join for literally joining all the elements on the array
+            ? anime.genres.slice(0, 3).map(genre => `<span class="genre-tag">${genre}</span>`).join('')
+            //If there is not anything, it will return a void value 
+            : '';
+          
+          //This part adds a badge depending of the situation (currently airing or movie)
+          const statusBadge = anime.airing_status === 'Currently Airing' 
+            ? '<span class="badge airing">Currently Airing</span>' 
+            : anime.format_type === 'Movie' 
+              ? '<span class="badge movie">Movie</span>' 
+              : '';
+          //It creates the card with HTML and adding the different variables on the information
+          const card = `
+            <a href="/specific_anime/${anime.id}">
+            <div class="anime-card" style="--animation-order: ${index}">
+              ${statusBadge}
+              <div class="card-image">
+                <img src="${anime.image_url}" alt="${anime.title}" loading="lazy">
+                <div class="anime-info-overlay">
+                  <div class="info-item"><strong>Status:</strong> ${anime.airing_status}</div>
+                  <div class="info-item"><strong>Type:</strong> ${anime.format_type}</div>
+                  <div class="info-item"><strong>Season:</strong> ${anime.season || 'N/A'}</div>
+                  <div class="info-item"><strong>Episodes:</strong> ${anime.episodes || 'Desconocido'}</div>
+                  <div class="info-item"><strong>Genres:</strong></div>
+                  <div class="genre-tags">${genresList}</div>
+                </div>
+              </div>
+              <div class="anime-title truncate">${anime.title}</div>
+            </div>
+            </a>
+          `;
+          //It inserts the card on the container, the before is for adding it at the end
+          document.getElementById('anime-container').insertAdjacentHTML('beforeend', card);
+        });
+        //if there are more animes to show, will increase by one the current page and has next loading will be true
+        if(data.has_next){
+          currentPage++;
+          has_next_loading = true
+        } else{
+          has_next_loading = false
+        }
+
+      } catch(error) {
+        console.error('Error:', error);
+      } finally {
+        //After all the instruction, it will hide the loader and change the variable isLoading to false (for allowing adding more animes)
+        hideLoader();
+        isLoading = false;
+      }
+    }
+
+    // It manage the scroll on the window, scrollTop is the current position, scrollHeight is the height of all the content, and the clientHeight is the visible height to the user
+    window.addEventListener('scroll', () => {
+      const { scrollTop, scrollHeight, clientHeight } = document.documentElement;
+      //If the user is approaching to the end, and is not loading, and there are more animes to show up, it will call the function loadAnimes
+      if (scrollTop + clientHeight >= scrollHeight - 600 && !isLoading && has_next_loading) {
+        loadAnimes();
+      }
+      
+      // If the current scrollTop is more than 300, it will show up the button to return at the beggining of the page
+      if (scrollTop > 300) {
+        document.getElementById('scroll-top').classList.add('visible');
+      } else {
+        document.getElementById('scroll-top').classList.remove('visible');
+      }
+    });
+
+    // If the user presses the button, it will return the user to the beggining with a good animation
+    document.getElementById('scroll-top').addEventListener('click', () => {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    });
+    
+    // If the user is typing on the input search it will activate the function loadAnimes with the reset true
+    document.getElementById('search').addEventListener('input', () => loadAnimes(true));
+    
+    // It cleans the container when the user presses the html with the class close or input-field
+    document.querySelector('.input-field .close').addEventListener('click', () => {
+      document.getElementById('search').value = '';
+      loadAnimes(true);
+    });
+
+    //It detects if the user presses the enter button on the search (activating the function loadAnimes)
+    document.getElementById('search').addEventListener('keydown', () => {
+      if (event.key === 'Enter' || event.keyCode === 13){
+        loadAnimes(true)
+      }
+      })
+    
+    // It takes all the selects and detects if there is a change on them, if that's true it will activate the function loadAnimes with the reset true
+    document.querySelectorAll('select').forEach(select => {
+      select.addEventListener('change', () => loadAnimes(true));
+    });
+    
+    // It loads the first animes
+    loadAnimes();
+  </script>
+</body>
+</html>
