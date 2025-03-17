@@ -147,3 +147,7 @@ def specific_anime(id_anime):
     else:
         #If the ID does not exist on the database, it will return a not found page
         return render_template('not_found.html')
+    
+@main_bp.app_errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
